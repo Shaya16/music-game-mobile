@@ -1,14 +1,14 @@
 import React from 'react';
 import LottieView from 'lottie-react-native';
 import * as Font from 'expo-font';
-
+import { Container, Header, Content, Footer, FooterTab, Button, Text } from 'native-base';
 
 
 
 
 import {
   StyleSheet,
-  Text,
+  
   View,
   TextInput,
 } from 'react-native';
@@ -143,12 +143,12 @@ export default class Piano extends React.Component {
   render () {
     return (
       <View style={{width:"100%", height:"100%", backgroundColor:"#94d0ff"}}>
-          
+          <Header><Text style={{ fontFamily: 'sans-serif' }}>Shai</Text></Header>
     
 
           {this.state.timer?<LottieView source={require('./8803-simple-countdown.json')} autoPlay width={300} style={{left:25,bottom:100, alignItems:"center"}}/>:null}
 
-           <View style={{ flex: 1, flexDirection: "column", alignItems: "center",    position: "absolute", bottom:0, height: 340, left:14}}>
+           <View style={{ flex: 1, flexDirection: "column", alignItems: "center", justifyContent: 'flex-end'}}>
           <View style={{ flexDirection : "row", alignItems: "center", justifyContent: "center", borderWidth: 20,
     borderColor: '#303131', borderBottomWidth:0, borderTopEndRadius:10, borderTopLeftRadius:10}}>
 
@@ -256,6 +256,7 @@ export default class Piano extends React.Component {
 
           </View>
         </View>
+        
       </View>
     );
   }
