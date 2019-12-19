@@ -2,6 +2,10 @@ import React from 'react';
 import LottieView from 'lottie-react-native';
 import * as Font from 'expo-font';
 
+
+
+
+
 import {
   StyleSheet,
   Text,
@@ -38,19 +42,13 @@ export default class Piano extends React.Component {
     
   }
 
-  componentDidMount() {
-    Font.loadAsync({
-      'open-sans-bold': require('./assets/Roboto/Roboto-Black.ttf'),
-    });
-    this.setState({ fontLoaded: true });
-  }
-  
   stroke ( note ) {
     // change backgroundColor
     switch ( note ) {
       case "C":
         this.timer()
         this.setState({ colorC: "rgba(1, 1, 1, 0.1)" })
+
         break;
       case "Cs":
         this.setState({ colorCs: "rgba(0, 0, 0, 0.5)" })
@@ -146,15 +144,9 @@ export default class Piano extends React.Component {
     return (
       <View style={{width:"100%", height:"100%", backgroundColor:"#94d0ff"}}>
           
-          {
-    this.state.fontLoaded ? (
-      <Text style={{ fontFamily: 'open-sans-bold', fontSize: 56 }}>
-        Hello, world!
-      </Text>
-    ) : null
-  }
+    
 
-          <LottieView source={require('./8803-simple-countdown.json')} autoPlay width={300} style={{left:25,bottom:100, alignItems:"center"}}/>
+          {this.state.timer?<LottieView source={require('./8803-simple-countdown.json')} autoPlay width={300} style={{left:25,bottom:100, alignItems:"center"}}/>:null}
 
            <View style={{ flex: 1, flexDirection: "column", alignItems: "center",    position: "absolute", bottom:0, height: 340, left:14}}>
           <View style={{ flexDirection : "row", alignItems: "center", justifyContent: "center", borderWidth: 20,
