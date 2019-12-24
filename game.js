@@ -6,7 +6,9 @@ import {play} from './piano'
 import * as Font from 'expo-font';
 import Fade from "react-native-fade";
 import LottieView from 'lottie-react-native';
+import io from "socket.io-client"
 
+const socket = io("http://10.0.3.146:5000/")
 
 export default class Game extends React.Component {
     constructor(props) {
@@ -16,7 +18,7 @@ export default class Game extends React.Component {
         this.state = {
 
             timer: false,
-            fontLoaded: false,
+            fontLoaded: true,
             lockKeboard: true,
             roundWinnerName: "SHAIDRAI",
             showRoundWinner: false,
@@ -29,23 +31,27 @@ export default class Game extends React.Component {
 
     // Font loading
     async componentDidMount() {
-        await Font.loadAsync({ 'kaki': require('./assets/fonts/CarterOne-Regular.ttf') })
-        this.setState({ fontLoaded: true });
         
         // Sockets Events handling
-        this.props.socket.emit("join",  "shaidraiking" )
+        
+        try{
+        socket.emit("join",  "shaidraiking" )
 
-        this.props.socket.on("start", (note)=>{
+        socket.on("start", (note)=>{
             this.newRound(note)
         })
         
-        this.props.socket.on("roundwinner", (winner)=>{
+        socket.on("roundwinner", (winner)=>{
             this.roundWinner(winner.winner)
         })
 
-        this.props.socket.on("roundstart", (note)=>{
+        socket.on("roundstart", (note)=>{
             this.newRound(note)
         })
+    }
+    catch{
+        // Internet Error
+    }
 
         setTimeout(() => {
             this.roundWinner("shai")
@@ -79,7 +85,7 @@ export default class Game extends React.Component {
 
             <LinearGradient colors={['#192f6a', '#268cdc', '#94d0ff']} style={{ width: "100%", height: "100%", backgroundColor: "#94d0ff" }}>
                 <View style={{ flexDirection: "row", }}>
-                    <View style={{ borderColor: "white", borderWidth: 5, top: 70, borderRadius: 150, backgroundColor: "rgb(255, 144, 236)", alignSelf: 'flex-start', alignItems: "center", justifyContent: "center" }}>{this.state.fontLoaded ? <Text style={{ fontFamily: 'kaki', fontSize: 25, alignSelf: 'flex-start', padding: 5 }}>SHAIDRAI: 30</Text> : null}</View>
+                    <View style={{ borderColor: "white", borderWidth: 5, top: 70, borderRadius: 150, backgroundColor: "rgb(255, 144, 236)", alignSelf: 'flex-start', alignItems: "center", justifyContent: "center" }}>{this.state.fontLoaded ? <Text style={{ fontFamily: 'kaki', fontSize: 25, alignSelf: 'flex-start', padding: 5 }}>{this.props.navigation.state.params.name}: 30</Text> : null}</View>
                     <View style={{ borderColor: "white", borderWidth: 5, marginLeft: "auto", top: 70, borderRadius: 150, backgroundColor: "rgb(154, 255, 153)", alignSelf: 'flex-start', lignItems: "center", justifyContent: "center" }}>{this.state.fontLoaded ? <Text style={{ fontFamily: 'kaki', fontSize: 25, alignSelf: 'flex-start', padding: 5 }}>SHAIDRAI: 30</Text> : null}</View>
                 </View>
                 <View style={{ flexDirection: "column", flex: 2, alignItems: "center", justifyContent: "center" }}>

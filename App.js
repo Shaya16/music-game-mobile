@@ -1,28 +1,15 @@
-import React from 'react';
-import { StyleSheet, View, TextInput, Animated } from 'react-native';
-import Game from './game';
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+import First from './First'
+import Game from './game'
 
-import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
-import io from 'socket.io-client'
+const MainNavigator = createStackNavigator({
+  First: {screen: First, navigationOptions: {header: null,} },
+  Game: {screen: Game, navigationOptions: {header: null,} }
+});
 
-const socket = io("http://10.0.3.146:5000/")
+const App = createAppContainer(MainNavigator);
 
+export default App;
 
-
-
-
-
-export default function App() {
-  
-  
-  return (
-
-
-    <Game socket={socket}/>
-    
-    
-
-  );
-}
 

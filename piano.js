@@ -1,7 +1,7 @@
 import React from 'react';
 import LottieView from 'lottie-react-native';
 import * as Font from 'expo-font';
-import { Container, Header, Content, Footer, FooterTab, Button, Text } from 'native-base';
+
 import { Audio } from 'expo-av';
 import { StyleSheet, View, TextInput, Animated } from 'react-native';
 import Fade from "react-native-fade";
