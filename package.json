@@ -20,6 +20,7 @@
     "react-native-dialog": "^5.6.0",
     "react-native-fade": "^1.0.3",
     "react-native-gesture-handler": "^1.5.2",
+    "react-native-navigation-bar-color": "^1.0.0",
     "react-native-sound": "^0.11.0",
     "react-native-web": "~0.11.7",
     "react-navigation": "^4.0.10",

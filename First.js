@@ -1,45 +1,50 @@
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, View, TextInput, Animated, Text, AsyncStorage } from 'react-native';
+import { StyleSheet, View, TextInput, Animated, Text, AsyncStorage, Image } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { Container, Header, Content, Footer, FooterTab, Button } from 'native-base';
 import * as Font from 'expo-font';
 import Game from './game'
 import Dialog from "react-native-dialog";
+import io from "socket.io-client"
 
-console.log("kaki")
 export default class First extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             fontLoaded: false,
-            namePopup: false
-
+            namePopup: false,
+            bar: false,
         }
+
+        
     }
 
 
     async componentDidMount() {
         await Font.loadAsync({ 'kaki': require('./assets/fonts/CarterOne-Regular.ttf') })
         this.setState({ fontLoaded: true });
+
+        const name = await AsyncStorage.getItem("name")
+        if (name) this.setState({name, bar: true}) 
         
     }
 
     async checkName(){
-        const name = await AsyncStorage.getItem("name")
-        if (name) { this.props.navigation.navigate('Game', {name})
-    console.log(name)
+        
+        if (this.state.name) { this.props.navigation.navigate('Game', {name: this.state.name})
+    
     }
         else this.setState({namePopup: true})
     }
 
     async enterName(){
-        const name = await AsyncStorage.getItem("name")
-        if (name) {
+        
+        if (this.state.name) {
             AsyncStorage.setItem("name", this.state.name)
-            this.setState({namePopup: false})
-            this.props.navigation.navigate('Game', {name})
+            this.setState({namePopup: false, bar: true})
+            this.props.navigation.navigate('Game', {name: this.state.name})
 
         }
         
@@ -50,9 +55,8 @@ export default class First extends React.Component {
             return (
 
                 <LinearGradient colors={['#69B096', '#32936F', '#29795B']} style={{ width: "100%", height: "100%",  alignItems: "center" }}>
-
-
-<LottieView source={require('./assets/animations/10008-music-note-character.json')} autoPlay width={300} style={{ position: "relative", shadowColor: "#000",
+{this.state.bar?
+<View style={{flexDirection:"row", backgroundColor:"#D6F2D2", height:100, width:"100%", shadowColor: "#000",
 shadowOffset: {
 	width: 0,
 	height: 4,
@@ -60,7 +64,28 @@ shadowOffset: {
 shadowOpacity: 0.30,
 shadowRadius: 4.65,
 
-elevation: 8, }} />
+elevation: 8, position:"absolute", top:0}}>
+
+
+    <Text style={{fontFamily:"kaki", top:50, fontSize:20, left:5, color:"#052628"}}>{this.state.name}</Text>
+
+    <Text style={{fontFamily:"kaki", top:50, fontSize:20, marginLeft:"auto", right:10, color:"#052628"}}>WINS: 5</Text>
+</View>
+:null
+}
+<LottieView source={require('./assets/animations/10008-music-note-character.json')} autoPlay width={300}  
+style={{position: "relative", shadowColor: "#000",
+shadowOffset: {
+	width: 0,
+	height: 4,
+},
+shadowOpacity: 0.30,
+shadowRadius: 4.65,
+
+elevation: 8}} />
+
+
+    
 <Text style={{fontFamily:"kaki", fontSize:40, color:"white", bottom:60}}>DO RE MI</Text>
 <Button  onPress={() => this.checkName()} style={{backgroundColor:"#1B393B", textAlign:"center", padding: 30,shadowColor: "#000",
 shadowOffset: {
@@ -72,7 +97,7 @@ shadowRadius: 9.11,
 
 elevation: 14, }}><Text style={{fontFamily:"kaki", fontSize:20, textAlign:"center", color:"white"}}>PLAY  1 VS 1  MODE</Text></Button>
 
-<View style={{height:"3%"}}></View>
+<View style={{height:"2%"}}></View>
 
 <Button style={{backgroundColor:"#1B393B", textAlign:"center", padding: 30, shadowColor: "#000",
 shadowOffset: {
@@ -83,6 +108,18 @@ shadowOpacity: 0.41,
 shadowRadius: 9.11,
 
 elevation: 14,}}><Text style={{fontFamily:"kaki", fontSize:20, textAlign:"center", color:"white"}}>PLAY TRAINING MODE</Text></Button>
+
+<View style={{height:"2%"}}></View>
+
+<Button style={{backgroundColor:"#1B393B", textAlign:"center", padding: 30, shadowColor: "#000",
+shadowOffset: {
+	width: 0,
+	height: 7,
+},
+shadowOpacity: 0.41,
+shadowRadius: 9.11,
+
+elevation: 14,}}><Text style={{fontFamily:"kaki", fontSize:20, textAlign:"center", color:"white"}}>TUTORIAL</Text></Button>
 
 <View style={{height:"3%"}}></View>
 
@@ -104,7 +141,7 @@ elevation: 14,}}><Text style={{fontFamily:"kaki", fontSize:20, textAlign:"center
           <Dialog.Title style={{fontFamily:"kaki"}}>Enter Your Nickname</Dialog.Title>
          
           <Dialog.Input onChangeText={name => this.setState({name})}> </Dialog.Input>
-          <Dialog.Button style={{fontFamily:"kaki"}} label="Cancel" />
+          <Dialog.Button style={{fontFamily:"kaki"}} label="Cancel" onPress={()=> this.setState({namePopup: false})} />
           <Dialog.Button style={{fontFamily:"kaki"}} label="OK" onPress={()=>{this.enterName()}}/>
         </Dialog.Container>
       </View>

@@ -7,13 +7,22 @@ import * as Font from 'expo-font';
 import Fade from "react-native-fade";
 import LottieView from 'lottie-react-native';
 import io from "socket.io-client"
+import Loading from './loading'
 
-const socket = io("http://10.0.3.146:5000/")
+
+
+
+//const socket = io("https://music-game-server.herokuapp.com/")
+
 
 export default class Game extends React.Component {
+    socket = io("http://192.168.1.19:5000")
+
+
     constructor(props) {
         super(props);
-
+        
+        this.params = this.props.navigation.state.params
         // backgroundColor
         this.state = {
 
@@ -22,7 +31,9 @@ export default class Game extends React.Component {
             lockKeboard: true,
             roundWinnerName: "SHAIDRAI",
             showRoundWinner: false,
-            note: 5
+            note: 5, 
+            loading: true,
+            
         }
         this.onClickNote = this.onClickNote.bind(this);
         // preload sounds
@@ -31,36 +42,45 @@ export default class Game extends React.Component {
 
     // Font loading
     async componentDidMount() {
-        
         // Sockets Events handling
+            
+            
         
-        try{
-        socket.emit("join",  "shaidraiking" )
+        
+            this.socket.emit("join",  this.params.name)
 
-        socket.on("start", (note)=>{
+            this.socket.on("start", (note)=>{
+            this.setState({loading: false})
             this.newRound(note)
         })
         
-        socket.on("roundwinner", (winner)=>{
+        this.socket.on("roundwinner", (winner)=>{
             this.roundWinner(winner.winner)
         })
 
-        socket.on("roundstart", (note)=>{
+        this.socket.on("roundstart", (note)=>{
             this.newRound(note)
         })
-    }
-    catch{
+    
+    
         // Internet Error
-    }
+    
 
         setTimeout(() => {
             this.roundWinner("shai")
         }, 2000);
+        
+    }
+
+    
+    componentWillUnmount(){
+        this.socket.close()
+        
     }
 
     onClickNote(answer) {
-        if (answer) this.props.socket.emit('answer', "correct")
-        else this.props.socket.emit('answer', "wrong")
+        if (answer) this.socket.emit('answer', "correct")
+        else this.socket.emit('answer', "wrong")
         
         this.setState({ lockKeboard: true })
     }
@@ -82,7 +102,10 @@ export default class Game extends React.Component {
 
     render() {
         return (
-
+            <View>
+             {this.state.loading? 
+             <Loading />
+             : 
             <LinearGradient colors={['#192f6a', '#268cdc', '#94d0ff']} style={{ width: "100%", height: "100%", backgroundColor: "#94d0ff" }}>
                 <View style={{ flexDirection: "row", }}>
                     <View style={{ borderColor: "white", borderWidth: 5, top: 70, borderRadius: 150, backgroundColor: "rgb(255, 144, 236)", alignSelf: 'flex-start', alignItems: "center", justifyContent: "center" }}>{this.state.fontLoaded ? <Text style={{ fontFamily: 'kaki', fontSize: 25, alignSelf: 'flex-start', padding: 5 }}>{this.props.navigation.state.params.name}: 30</Text> : null}</View>
@@ -102,8 +125,11 @@ export default class Game extends React.Component {
                 <Piano onClickNote={this.onClickNote} note={this.state.note} />
                 {this.state.lockKeboard ? <View style={{ position: "absolute", height: 350, width: "100%", bottom: 0, opacity: 0.5 }}></View> : null}
             </LinearGradient>
+             }
+            </View>
 
         )
     }
 }
+
 
