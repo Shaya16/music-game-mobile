@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "DO RE MI",
-    "slug": "DO RE MI",
+    "slug": "DO_RE_MI",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -30,11 +30,7 @@
     },
     "androidNavigationBar": {
     
-    "visible": false,
-   
-    "barStyle": "light-content",
-
-    "backgroundColor": "transparent"
+    "visible": false
   }
 
   }
