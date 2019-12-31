@@ -90,7 +90,8 @@ export default class Piano extends React.Component {
       "white",
       "black",
       "white",]
-      , savedColor: ""
+      , savedColor: "",
+      blockKeyboard: false
     }
 
     // preload sounds
@@ -142,18 +143,22 @@ highlightClickedColor(note, color){
 
 
   stroke ( note ) {
+    if (!this.state.blockKeyboard){
     this.setState({ savedColor: this.state.notesColors[note] })
     const newList = this.state.notesColors
     newList[note] = "rgba(1, 1, 1, 0.1)"
     this.setState( { notesColors: newList })
-    
+    }
     
   }
   stop( note ) {
     
+    if (!this.state.blockKeyboard){
+      this.setState({blockKeyboard: true})
+      setTimeout(()=>{
+        this.setState({blockKeyboard: false})
+      }, 500)
     play(note)
-    
-
     this.props.onClickNote(note === this.props.note)
     if (note === this.props.note){
       this.highlightClickedColor(note, "rgb(154, 255, 153)")
@@ -165,6 +170,7 @@ highlightClickedColor(note, color){
       this.highlightColor(this.props.note,"rgb(154, 255, 153)")
     }
 
+    }
   }
   
   render () {
